@@ -61,6 +61,14 @@ class Generator(nn.Module):
                 )
         self.residualblocks = nn.Sequential(
                 ResidualBlock(128)
+                ResidualBlock(128)
+                ResidualBlock(128)
+                ResidualBlock(128)
+                ResidualBlock(128)
+                ResidualBlock(128)
+                ResidualBlock(128)
+                ResidualBlock(128)
+                ResidualBlock(128)
                 )
         self.ulayers = nn.Sequential(
                 deConv(128, 64),
