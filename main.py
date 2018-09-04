@@ -102,7 +102,7 @@ def train(**kwargs):
         vis.plot('loss_D_B', epoch, avgloss_D_B / i)
         
         test_iter = iter(test_dataloader)
-        real_A, realB = next(test_iter)
+        real_A, real_B = next(test_iter)
         
         real_A = real_A.cuda()
         real_B = real_B.cuda()

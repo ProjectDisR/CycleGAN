@@ -14,7 +14,7 @@ class StyleAB(data.Dataset):
     
     def __init__(self, root, train=True):
         folder = 'test'
-        if train == True:
+        if train:
             folder = 'train'
             
         A_img_ls = os.listdir(os.path.join(root, folder+'A'))
