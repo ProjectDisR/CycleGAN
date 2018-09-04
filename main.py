@@ -12,17 +12,20 @@ import torch as t
 from torch.utils.data import DataLoader
 from torch import nn
 from model import Generator, Discriminator
-#from utils.visualize import Visaulizer
+from utils.visualize import Visualizer
 
 
 def train(**kwargs):
+    
     opt = DefaultConfig()
     opt.parse(kwargs)
     
     dataset = StyleAB(opt.data_root, train=True)
-    dataloader = DataLoader(dataset, opt.batch_size, shuffle=True)
+    train_dataloader = DataLoader(dataset, opt.batch_size, shuffle=True)
+    dataset = StyleAB(opt.data_root, train=False)
+    test_dataloader = DataLoader(dataset, opt.batch_size, shuffle=False)
     
-#    vis = Visualizer(opt.env)
+    vis = Visualizer(opt.env)
     
     G_A2B = Generator()
     G_B2A = Generator()
@@ -37,18 +40,27 @@ def train(**kwargs):
     criterion_real = nn.MSELoss()
     criterion_recons = nn.L1Loss()
     
-    optimizer_G = t.optim.Adam(itertools.chain(G_A2B.parameters(), G_B2A.parameters()),
-                                lr=opt.lr, betas=(0.5, 0.999))
+    optimizer_G = t.optim.Adam(itertools.chain(G_A2B.parameters(), G_B2A.parameters()), 
+                               lr=opt.lr, betas=(0.5, 0.999))
     optimizer_D_A = t.optim.Adam(D_A.parameters(), lr=opt.lr, betas=(0.5, 0.999))
     optimizer_D_B = t.optim.Adam(D_B.parameters(), lr=opt.lr, betas=(0.5, 0.999))
+    
+    vis.add_names(['loss_G', 'loss_D_A', 'loss_D_B'])
+    
     for epoch in range(opt.n_epoch):
-        for i, (real_A, real_B) in enumerate(dataloader):
-            
+        
+        avgloss_G = 0
+        avgloss_D_A = 0
+        avgloss_D_B = 0
+        
+        
+        for i, (real_A, real_B) in enumerate(train_dataloader):
+            print(i)
             real_A = real_A.cuda()
             real_B = real_B.cuda()
             
-            yes = t.ones(opt.batch_size, 1).cuda()
-            no = t.zeros(opt.batch_size, 1).cuda()
+            yes = t.ones(real_A.size()[0], 1).cuda()
+            no = t.zeros(real_A.size()[0], 1).cuda()
             
             gener_B = G_A2B(real_A)
             recons_A = G_B2A(gener_B)
@@ -68,16 +80,57 @@ def train(**kwargs):
             gener_B = gener_B.detach()
             
             loss_D_A = criterion_real(D_A(gener_A), no) + criterion_real(D_A(real_A), yes)
+            loss_D_A = loss_D_A*0.5
             
             optimizer_D_A.zero_grad()
             loss_D_A.backward()
             optimizer_D_A.step()
             
             loss_D_B = criterion_real(D_B(gener_B), no) + criterion_real(D_B(real_B), yes)
+            loss_D_B = loss_D_B*0.5
             
             optimizer_D_B.zero_grad()
             loss_D_B.backward()
             optimizer_D_B.step()
             
-            print(loss_G.cpu().item(), loss_D_A.cpu().item(), loss_D_B.cpu().item())
+            avgloss_G += loss_G.cpu().item()
+            avgloss_D_A += loss_D_A.cpu().item()
+            avgloss_D_B += loss_D_B.cpu().item()
+        
+        vis.plot('loss_G', epoch, avgloss_G / i)
+        vis.plot('loss_D_A', epoch, avgloss_D_A / i)
+        vis.plot('loss_D_B', epoch, avgloss_D_B / i)
+        
+        test_iter = iter(test_dataloader)
+        real_A, realB = next(test_iter)
+        
+        real_A = real_A.cuda()
+        real_B = real_B.cuda()
+
+        gener_B = G_A2B(real_A)
+        gener_A = G_B2A(real_B)
+        
+        real_A = real_A.cpu()*0.5 + 0.5 
+        real_B = real_B.cpu()*0.5 + 0.5
+        gener_A = gener_A.cpu()*0.5 + 0.5
+        gener_B = gener_B.cpu()*0.5 + 0.5
+        
+        vis.imgs('real_A', real_A)
+        vis.imgs('real_B', real_B)
+        vis.imgs('gener_A', gener_A)
+        vis.imgs('gener_B', gener_B)
+        
+        vis.log('epoch:{}, loss_G:{}, loss_D_A:{}, loss_D_B:{}'.format(epoch, avgloss_G, avgloss_D_A, avgloss_D_B))
+        
+        t.save(G_A2B.state_dict(), 'checkpoints/G_A2B_e{epoch}.ckpt'.format(epoch))
+        t.save(G_B2A.state_dict(), 'checkpoints/G_B2A_e{epoch}.ckpt'.format(epoch))
+        
+    if epoch > 100:
+        opt.lr -= 0.0002*0.01
+        
+    optimizer_G = t.optim.Adam(itertools.chain(G_A2B.parameters(), G_B2A.parameters()), 
+                               lr=opt.lr, betas=(0.5, 0.999))
+    optimizer_D_A = t.optim.Adam(D_A.parameters(), lr=opt.lr, betas=(0.5, 0.999))
+    optimizer_D_B = t.optim.Adam(D_B.parameters(), lr=opt.lr, betas=(0.5, 0.999))
+    
 train()

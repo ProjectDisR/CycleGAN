@@ -57,3 +57,6 @@ class StyleAB(data.Dataset):
 #    if I.shape[-1] != 3:
 #        os.remove(A_img_ls[i]) 
 #        print(i)
+for i in range(10):
+    i
+print(i)

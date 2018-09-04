@@ -9,7 +9,7 @@ class DefaultConfig():
     env = 'CycleGAN'
     
     data_root = 'datasets/horse2zebra'
-    batch_size = 1
+    batch_size = 2
     n_epoch = 200
     lr = 0.0002
     lambda_cyle = 10
