@@ -120,10 +120,10 @@ def train(**kwargs):
         vis.imgs('gener_A', gener_A)
         vis.imgs('gener_B', gener_B)
         
-        vis.log('epoch:{}, loss_G:{}, loss_D_A:{}, loss_D_B:{}'.format(epoch, avgloss_G, avgloss_D_A, avgloss_D_B))
+        vis.log('epoch:{}, loss_G:{}, loss_D_A:{}, loss_D_B:{}'.format(epoch, avgloss_G/i, avgloss_D_A/i, avgloss_D_B/i))
         
-        t.save(G_A2B.state_dict(), 'checkpoints/G_A2B_e{epoch}.ckpt'.format(epoch))
-        t.save(G_B2A.state_dict(), 'checkpoints/G_B2A_e{epoch}.ckpt'.format(epoch))
+        t.save(G_A2B.state_dict(), 'checkpoints/G_A2B_e{}.ckpt'.format(epoch))
+        t.save(G_B2A.state_dict(), 'checkpoints/G_B2A_e{}.ckpt'.format(epoch))
         
     if epoch > 100:
         opt.lr -= 0.0002*0.01

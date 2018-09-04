@@ -34,5 +34,5 @@ class Visualizer():
         self.vis.images(I, win=name)
         
     def log(self, info, win='log'):
-        self.log_text += '{info} <br>'.format(info)
+        self.log_text += '{} <br>'.format(info)
         self.vis.text(self.log_text, win)
