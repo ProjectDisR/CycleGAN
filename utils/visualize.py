@@ -27,7 +27,7 @@ class Visualizer():
         else:
             
             opts = {'xlabel':'epoch', 'ylabel':name} 
-            self.vis.line(Y=np.array[value], X=np.array(epoch), win=name,
+            self.vis.line(Y=np.array([value]), X=np.array([epoch]), win=name,
                           opts=opts, update=None if epoch == 0 else 'append')
             
     def imgs(self, name, I):
