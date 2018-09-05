@@ -189,7 +189,7 @@ def test(**kwargs):
 
 def help():
     print("""
-    usage : python {} <function> [--args=value]
+    usage : python {0} <function> [--args=value]
     <function> := train | test | help
     example: 
             python {0} train --env='env0701' --lr=0.01
