@@ -143,13 +143,13 @@ class Discriminator(nn.Module):
         
         return x
 
-#if __name__ == '__main__': 
-#    a = t.randn(2, 3, 256, 256)
-#    G = Generator()
-#    D = Discriminator()
-#    a = G(a)
-#    print(a.size())
-#    a = D(a)
-#    a = a.view(-1, 1)
-#    print(a.size())
+if __name__ == '__main__': 
+    a = t.randn(2, 3, 256, 256)
+    G = Generator()
+    D = Discriminator()
+    a = G(a)
+    print(a.size())
+    a = D(a)
+    a = a.view(-1, 1)
+    print(a.size())
 

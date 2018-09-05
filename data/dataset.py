@@ -63,7 +63,12 @@ def remove_gray(root, folder):
             print(img_dir)
     return
 
-#remove_gray('horse2zebra', 'trainA')
-#remove_gray('horse2zebra', 'trainB')
-#remove_gray('horse2zebra', 'testA')
-#remove_gray('horse2zebra', 'testB')
+if __name__ == '__main__': 
+    remove_gray('horse2zebra', 'trainA')
+    remove_gray('horse2zebra', 'trainA')
+    remove_gray('horse2zebra', 'trainB')
+    remove_gray('horse2zebra', 'trainB')
+    remove_gray('horse2zebra', 'testA')
+    remove_gray('horse2zebra', 'testA')
+    remove_gray('horse2zebra', 'testB')
+    remove_gray('horse2zebra', 'testB')

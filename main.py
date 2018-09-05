@@ -18,6 +18,8 @@ from utils.visualize import Visualizer
 
 from skimage.io import imsave
 
+import fire
+
 def train(**kwargs):
     
     opt = DefaultConfig()
@@ -140,6 +142,8 @@ def train(**kwargs):
     optimizer_D_A = t.optim.Adam(D_A.parameters(), lr=opt.lr, betas=(0.5, 0.999))
     optimizer_D_B = t.optim.Adam(D_B.parameters(), lr=opt.lr, betas=(0.5, 0.999))
     
+    return
+
 def test(**kwargs):
     
     opt = DefaultConfig()
@@ -180,3 +184,22 @@ def test(**kwargs):
             I_B = np.transpose(I_B, (1, 2, 0))
             imsave(os.path.join(opt.data_root, 'generB', img_name_A), I_B)
             imsave(os.path.join(opt.data_root, 'generA', img_name_B), I_A)
+            
+    return
+
+def help():
+    print("""
+    usage : python {} <function> [--args=value]
+    <function> := train | test | help
+    example: 
+            python {0} train --env='env0701' --lr=0.01
+            python {0} test
+            python {0} help
+    avaiable args:""".format(__file__))
+    from inspect import getsource
+    opt = DefaultConfig()
+    source = (getsource(opt.__class__))
+    print(source)
+
+if __name__ == '__main__':
+    fire.Fire()
