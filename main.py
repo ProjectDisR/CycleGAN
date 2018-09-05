@@ -4,16 +4,19 @@ Created on Mon Sep  3 22:25:09 2018
 
 @author: user
 """
+import os
 import itertools
+import numpy as np
 
 from config import DefaultConfig
 from datasets.dataset import StyleAB
 import torch as t
 from torch.utils.data import DataLoader
 from torch import nn
-from model import Generator, Discriminator
+from models.cyclegan import Generator, Discriminator
 from utils.visualize import Visualizer
 
+from skimage.io import imsave
 
 def train(**kwargs):
     
@@ -53,7 +56,7 @@ def train(**kwargs):
         avgloss_D_B = 0
         
         
-        for i, (real_A, real_B) in enumerate(train_dataloader):
+        for i, (real_A, real_B, img_names_A, img_names_B) in enumerate(train_dataloader):
             print(i)
             real_A = real_A.cuda()
             real_B = real_B.cuda()
@@ -101,7 +104,7 @@ def train(**kwargs):
         vis.plot('loss_D_B', epoch, avgloss_D_B/i)
         
         test_iter = iter(test_dataloader)
-        real_A, real_B = next(test_iter)
+        real_A, real_B, img_names_A, img_names_B = next(test_iter)
         
         real_A = real_A.cuda()
         real_B = real_B.cuda()
@@ -109,10 +112,15 @@ def train(**kwargs):
         gener_B = G_A2B(real_A)
         gener_A = G_B2A(real_B)
         
-        real_A = real_A.cpu()*0.5 + 0.5 
-        real_B = real_B.cpu()*0.5 + 0.5
-        gener_A = gener_A.cpu()*0.5 + 0.5
-        gener_B = gener_B.cpu()*0.5 + 0.5
+        real_A = real_A*0.5 + 0.5 
+        real_B = real_B*0.5 + 0.5
+        gener_A = gener_A*0.5 + 0.5
+        gener_B = gener_B*0.5 + 0.5
+        
+        real_A = real_A.cpu()
+        real_B = real_B.cpu()
+        gener_A = gener_A.cpu()
+        gener_B = gener_B.cpu()
         
         vis.imgs('real_A', real_A)
         vis.imgs('real_B', real_B)
@@ -121,8 +129,8 @@ def train(**kwargs):
         
         vis.log('epoch:{}, loss_G:{}, loss_D_A:{}, loss_D_B:{}'.format(epoch, avgloss_G/i, avgloss_D_A/i, avgloss_D_B/i))
         
-        t.save(G_A2B.state_dict(), 'checkpoints/G_A2B_e{}.ckpt'.format(epoch))
-        t.save(G_B2A.state_dict(), 'checkpoints/G_B2A_e{}.ckpt'.format(epoch))
+        t.save(G_A2B.state_dict(), 'checkpoints/G_A2B_e{}.ckpt'.format(epoch+1))
+        t.save(G_B2A.state_dict(), 'checkpoints/G_B2A_e{}.ckpt'.format(epoch+1))
         
     if epoch > 100:
         opt.lr -= 0.0002*0.01
@@ -132,4 +140,43 @@ def train(**kwargs):
     optimizer_D_A = t.optim.Adam(D_A.parameters(), lr=opt.lr, betas=(0.5, 0.999))
     optimizer_D_B = t.optim.Adam(D_B.parameters(), lr=opt.lr, betas=(0.5, 0.999))
     
-train()
+def test(**kwargs):
+    
+    opt = DefaultConfig()
+    opt.parse(kwargs)
+    
+    dataset = StyleAB(opt.data_root, train=False)
+    test_dataloader = DataLoader(dataset, opt.batch_size, shuffle=False)
+       
+    G_A2B = Generator()
+    G_B2A = Generator()
+    G_A2B.load_state_dict(os.path.join(opt.ckpts_root, 'G_A2B_e'+str(opt.n_epoch)+'.ckpt'))
+    G_B2A.load_state_dict(os.path.join(opt.ckpts_root, 'G_B2A_e'+str(opt.n_epoch)+'.ckpt'))
+    G_A2B = G_A2B.cuda().eval()
+    G_B2A = G_B2A.cuda().eval()
+    
+    for i, (real_A, real_B, img_names_A, img_names_B) in enumerate(test_dataloader):
+        
+        real_A = real_A.cuda()
+        real_B = real_B.cuda()
+        gener_B = G_A2B(real_A)
+        gener_A = G_B2A(real_B)
+        
+        gener_A = (gener_A*0.5 + 0.5)*255
+        gener_B = (gener_B*0.5 + 0.5)*255
+        gener_A = t.clamp(gener_A, 0, 255)
+        gener_B = t.clamp(gener_B, 0, 255)
+        gener_A = gener_A.cpu().numpy()
+        gener_B = gener_B.cpu().numpy()
+
+        if not os.path.isdir(os.path.join(opt.data_root, 'generA')):
+            os.mkdir(os.path.join(opt.data_root, 'generA'))
+        
+        if not os.path.isdir(os.path.join(opt.data_root, 'generB')):
+            os.mkdir(os.path.join(opt.data_root, 'generB'))
+        
+        for I_A, I_B, img_name_A, img_name_B in zip(gener_A, gener_B, img_names_A, img_names_B):
+            I_A = np.transpose(I_A, (1, 2, 0))
+            I_B = np.transpose(I_B, (1, 2, 0))
+            imsave(os.path.join(opt.data_root, 'generB', img_name_A), I_B)
+            imsave(os.path.join(opt.data_root, 'generA', img_name_B), I_A)

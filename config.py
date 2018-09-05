@@ -9,7 +9,8 @@ class DefaultConfig():
     
     env = 'CycleGAN'
     data_root = 'datasets/horse2zebra'
-       
+    ckpts_root = 'checkpoints'
+    
     n_epoch = 200
     batch_size = 2
     lr = 0.0002

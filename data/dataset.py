@@ -15,16 +15,19 @@ import torchvision as tv
 class StyleAB(data.Dataset):
     
     def __init__(self, root, train=True):
+        
+        self.train = train
+        
         folder = 'test'
-        if train:
+        if self.train:
             folder = 'train'
             
-        A_img_ls = os.listdir(os.path.join(root, folder+'A'))
-        B_img_ls = os.listdir(os.path.join(root, folder+'B'))
-        self.A_img_ls = [os.path.join(root, folder+'A', img_name) for img_name in A_img_ls]
-        self.B_img_ls = [os.path.join(root, folder+'B', img_name) for img_name in B_img_ls]
-        self.A_img_ls.sort()
-        self.B_img_ls.sort()
+        self.img_name_ls_A = os.listdir(os.path.join(root, folder+'A'))
+        self.img_name_ls_B = os.listdir(os.path.join(root, folder+'B'))
+        self.img_name_ls_A.sort()
+        self.img_name_ls_B.sort()
+        self.img_ls_A = [os.path.join(root, folder+'A', img_name) for img_name in self.img_name_ls_A]
+        self.img_ls_B = [os.path.join(root, folder+'B', img_name) for img_name in self.img_name_ls_B]
         
         self.transforms = tv.transforms.Compose([
                 tv.transforms.ToTensor(),
@@ -32,16 +35,16 @@ class StyleAB(data.Dataset):
                 ])
         
     def __getitem__(self, index):
-        I_A = imread(self.A_img_ls[index % len(self.A_img_ls)])
-        I_B = imread(self.B_img_ls[index % len(self.B_img_ls)])
+        I_A = imread(self.img_ls_A[index % len(self.img_ls_A)])
+        I_B = imread(self.img_ls_B[index % len(self.img_ls_B)])
         I_A = self.transforms(I_A)
         I_B = self.transforms(I_B)
         
-        return I_A, I_B
+        return I_A, I_B, self.img_name_ls_A[index % len(self.img_name_ls_A)], self.img_name_ls_B[index % len(self.img_name_ls_B)]
     
     def __len__(self):
         
-        return max(len(self.A_img_ls), len(self.B_img_ls))
+        return max(len(self.img_ls_A), len(self.img_ls_B))
     
 def remove_gray(root, folder):
     
