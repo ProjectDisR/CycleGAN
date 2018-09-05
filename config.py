@@ -17,6 +17,16 @@ class DefaultConfig():
         self.batch_size = 2
         self.lr = 0.0002
         self.lambda_cyle = 10
+        
+    def print_config(self):
+        
+        import inspect
+        
+        for k in dir(self):   
+            if not k.startswith('__') and not inspect.ismethod(getattr(self, k)):
+                print('   ', k, ':', getattr(self, k))
+                
+        return
     
     def parse(self, kwargs):
         
@@ -27,9 +37,6 @@ class DefaultConfig():
             else:
                 setattr(self, k, v)
                 
-        for k, v in self.__class__.__dict__.items():
-            
-            if not k.startswith('__'):
-                print(k, v)
+        self.print_config()
         
         return

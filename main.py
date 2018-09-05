@@ -195,9 +195,9 @@ def help():
             python {0} train --env='env0701' --lr=0.01
             python {0} test
             python {0} help
-    avaiable args:""".format(__file__))
+    avaiable args:\n""".format(__file__))
     opt = DefaultConfig()
-    opt.parse()
+    opt.print_config()
 
 if __name__ == '__main__':
     fire.Fire()
