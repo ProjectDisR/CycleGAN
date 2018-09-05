@@ -9,7 +9,7 @@ import itertools
 import numpy as np
 
 from config import DefaultConfig
-from datasets.dataset import StyleAB
+from datasets.datasets import StyleAB
 import torch as t
 from torch.utils.data import DataLoader
 from torch import nn
