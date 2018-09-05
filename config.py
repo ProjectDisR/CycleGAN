@@ -7,14 +7,16 @@ Created on Mon Sep  3 21:49:28 2018
 
 class DefaultConfig():
     
-    env = 'CycleGAN'
-    data_root = 'datasets/horse2zebra'
-    ckpts_root = 'checkpoints'
-    
-    n_epoch = 200
-    batch_size = 2
-    lr = 0.0002
-    lambda_cyle = 10
+    def __init__(self):
+        
+        self.env = 'CycleGAN'
+        self.data_root = 'datasets/horse2zebra'
+        self.ckpts_root = 'checkpoints'
+        
+        self.n_epoch = 200
+        self.batch_size = 2
+        self.lr = 0.0002
+        self.lambda_cyle = 10
     
     def parse(self, kwargs):
         

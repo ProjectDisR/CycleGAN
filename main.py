@@ -196,10 +196,8 @@ def help():
             python {0} test
             python {0} help
     avaiable args:""".format(__file__))
-    from inspect import getsource
     opt = DefaultConfig()
-    source = (getsource(opt.__class__))
-    print(source)
+    opt.parse()
 
 if __name__ == '__main__':
     fire.Fire()
