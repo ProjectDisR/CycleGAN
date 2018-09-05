@@ -134,13 +134,13 @@ def train(**kwargs):
         t.save(G_A2B.state_dict(), 'checkpoints/G_A2B_e{}.ckpt'.format(epoch+1))
         t.save(G_B2A.state_dict(), 'checkpoints/G_B2A_e{}.ckpt'.format(epoch+1))
         
-    if epoch > 100:
-        opt.lr -= 0.0002*0.01
-        
-    optimizer_G = t.optim.Adam(itertools.chain(G_A2B.parameters(), G_B2A.parameters()), 
-                               lr=opt.lr, betas=(0.5, 0.999))
-    optimizer_D_A = t.optim.Adam(D_A.parameters(), lr=opt.lr, betas=(0.5, 0.999))
-    optimizer_D_B = t.optim.Adam(D_B.parameters(), lr=opt.lr, betas=(0.5, 0.999))
+        if epoch > 100:
+            opt.lr -= 0.0002*0.01
+            
+        optimizer_G = t.optim.Adam(itertools.chain(G_A2B.parameters(), G_B2A.parameters()), 
+                                   lr=opt.lr, betas=(0.5, 0.999))
+        optimizer_D_A = t.optim.Adam(D_A.parameters(), lr=opt.lr, betas=(0.5, 0.999))
+        optimizer_D_B = t.optim.Adam(D_B.parameters(), lr=opt.lr, betas=(0.5, 0.999))
     
     return
 
