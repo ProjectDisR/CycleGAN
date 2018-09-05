@@ -40,6 +40,7 @@ class ResidualBlock(nn.Module):
         return x + self.function(x)
 
 class upConv(nn.Module):
+    
     def __init__(self, in_channels, out_channels, kernel_size=3, stride=2, padding=1, output_padding=1):
         super(upConv, self).__init__()
         
@@ -54,6 +55,7 @@ class upConv(nn.Module):
         return self.function(x)
         
 class Generator(nn.Module):
+    
     def __init__(self):
         super(Generator, self).__init__()
         
@@ -133,19 +135,21 @@ class Discriminator(nn.Module):
                 )
         
     def forward(self, x):
+        
         x = self.init(x)
         x = self.layers(x)
         x = self.discriminate(x)
         x = x.view(-1, 1)
+        
         return x
 
-if __name__ == '__main__': 
-    a = t.randn(2, 3, 256, 256)
-    G = Generator()
-    D = Discriminator()
-    a = G(a)
-    print(a.size())
-    a = D(a)
-    a = a.view(-1, 1)
-    print(a.size())
+#if __name__ == '__main__': 
+#    a = t.randn(2, 3, 256, 256)
+#    G = Generator()
+#    D = Discriminator()
+#    a = G(a)
+#    print(a.size())
+#    a = D(a)
+#    a = a.view(-1, 1)
+#    print(a.size())
 

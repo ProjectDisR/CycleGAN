@@ -6,9 +6,11 @@ Created on Mon Sep  3 21:04:00 2018
 """
 
 import os
+from skimage.io import imread
+
 from torch.utils import data
 import torchvision as tv
-from skimage.io import imread
+
 
 class StyleAB(data.Dataset):
     
@@ -19,8 +21,8 @@ class StyleAB(data.Dataset):
             
         A_img_ls = os.listdir(os.path.join(root, folder+'A'))
         B_img_ls = os.listdir(os.path.join(root, folder+'B'))
-        self.A_img_ls = [os.path.join(root, folder+'A', img) for img in A_img_ls]
-        self.B_img_ls = [os.path.join(root, folder+'B', img) for img in B_img_ls]
+        self.A_img_ls = [os.path.join(root, folder+'A', img_name) for img_name in A_img_ls]
+        self.B_img_ls = [os.path.join(root, folder+'B', img_name) for img_name in B_img_ls]
         self.A_img_ls.sort()
         self.B_img_ls.sort()
         
@@ -41,22 +43,24 @@ class StyleAB(data.Dataset):
         
         return max(len(self.A_img_ls), len(self.B_img_ls))
     
+def remove_gray(root, folder):
+    
+    print(os.path.join(root, folder))
+    
+    img_ls = os.listdir(os.path.join(root, folder))
+    img_ls = [os.path.join(root, folder, img_name) for img_name in img_ls]
+    img_ls.sort()
+    
+    for img_dir in img_ls:
+        
+        I = imread(img_dir)
+        
+        if I.shape[-1] != 3:
+            os.remove(img_dir) 
+            print(img_dir)
+    return
 
-#dataset = StyleAB('horse2zebra', train=True)
-#for i in range(3000):
-#    A, B = dataset[i]
-#    print(A.size(), B.size())
-#    print(i)
-#root = 'horse2zebra'
-#folder = 'train'
-#A_img_ls = os.listdir(os.path.join(root, folder+'A'))
-#A_img_ls = [os.path.join(root, folder+'A', img) for img in A_img_ls]
-#A_img_ls.sort()
-#for i in range(len(A_img_ls)):
-#    I = imread(A_img_ls[i])
-#    if I.shape[-1] != 3:
-#        os.remove(A_img_ls[i]) 
-#        print(i)
-for i in range(10):
-    i
-print(i)
+#remove_gray('horse2zebra', 'trainA')
+#remove_gray('horse2zebra', 'trainB')
+#remove_gray('horse2zebra', 'testA')
+#remove_gray('horse2zebra', 'testB')

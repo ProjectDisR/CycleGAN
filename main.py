@@ -24,9 +24,7 @@ def train(**kwargs):
     train_dataloader = DataLoader(dataset, opt.batch_size, shuffle=True)
     dataset = StyleAB(opt.data_root, train=False)
     test_dataloader = DataLoader(dataset, opt.batch_size, shuffle=False)
-    
-    vis = Visualizer(opt.env)
-    
+       
     G_A2B = Generator()
     G_B2A = Generator()
     D_A = Discriminator()
@@ -45,7 +43,8 @@ def train(**kwargs):
     optimizer_D_A = t.optim.Adam(D_A.parameters(), lr=opt.lr, betas=(0.5, 0.999))
     optimizer_D_B = t.optim.Adam(D_B.parameters(), lr=opt.lr, betas=(0.5, 0.999))
     
-    vis.add_names(['loss_G', 'loss_D_A', 'loss_D_B'])
+    vis = Visualizer(opt.env)
+    vis.add_names('loss_G', 'loss_D_A', 'loss_D_B')
     
     for epoch in range(opt.n_epoch):
         
@@ -97,9 +96,9 @@ def train(**kwargs):
             avgloss_D_A += loss_D_A.cpu().item()
             avgloss_D_B += loss_D_B.cpu().item()
         
-        vis.plot('loss_G', epoch, avgloss_G / i)
-        vis.plot('loss_D_A', epoch, avgloss_D_A / i)
-        vis.plot('loss_D_B', epoch, avgloss_D_B / i)
+        vis.plot('loss_G', epoch, avgloss_G/i)
+        vis.plot('loss_D_A', epoch, avgloss_D_A/i)
+        vis.plot('loss_D_B', epoch, avgloss_D_B/i)
         
         test_iter = iter(test_dataloader)
         real_A, real_B = next(test_iter)
