@@ -6,8 +6,8 @@ Created on Mon Sep  3 22:25:09 2018
 """
 import os
 import time
-
 import itertools
+
 import numpy as np
 
 from config import DefaultConfig
@@ -38,13 +38,13 @@ def train(**kwargs):
     D_B = Discriminator()
     
     while True:
+        
       try:
       
         G_A2B = G_A2B.cuda()
         G_B2A = G_B2A.cuda()
         D_A = D_A.cuda()
-        D_B = D_B.cuda()
-        
+        D_B = D_B.cuda()      
         break
         
       except:
