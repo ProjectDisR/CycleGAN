@@ -5,6 +5,8 @@ Created on Mon Sep  3 22:25:09 2018
 @author: user
 """
 import os
+import time
+
 import itertools
 import numpy as np
 
@@ -35,10 +37,20 @@ def train(**kwargs):
     D_A = Discriminator()
     D_B = Discriminator()
     
-    G_A2B = G_A2B.cuda()
-    G_B2A = G_B2A.cuda()
-    D_A = D_A.cuda()
-    D_B = D_B.cuda()
+    while True:
+      try:
+      
+        G_A2B = G_A2B.cuda()
+        G_B2A = G_B2A.cuda()
+        D_A = D_A.cuda()
+        D_B = D_B.cuda()
+        
+        break
+        
+      except:
+        
+        print('Fail ',time.strftime("%Y-%m-%d %H:%M:%S", time.gmtime()))
+        time.sleep(60)
     
     criterion_real = nn.MSELoss()
     criterion_recons = nn.L1Loss()
