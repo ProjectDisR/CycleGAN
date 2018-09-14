@@ -39,7 +39,7 @@ class Visualizer():
     
     def imgs(self, name, I):
         
-        self.vis.images(I, win=name)
+        self.vis.images(I, nrow=4, win=name)
         
         return
         

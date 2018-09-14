@@ -71,7 +71,7 @@ def train(**kwargs):
         
         
         for i, (real_A, real_B, img_names_A, img_names_B) in enumerate(train_dataloader):
-            print(i)
+            
             real_A = real_A.cuda()
             real_B = real_B.cuda()
             
@@ -143,6 +143,9 @@ def train(**kwargs):
         
         vis.log('epoch:{}, loss_G:{}, loss_D_A:{}, loss_D_B:{}'.format(epoch, avgloss_G/i, avgloss_D_A/i, avgloss_D_B/i))
         
+        if not os.path.isdir('checkpoints'):
+            os.mkdir('checkpoints')
+            
         t.save(G_A2B.state_dict(), 'checkpoints/G_A2B_e{}.ckpt'.format(epoch+1))
         t.save(G_B2A.state_dict(), 'checkpoints/G_B2A_e{}.ckpt'.format(epoch+1))
         
