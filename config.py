@@ -35,7 +35,7 @@ class DefaultConfig():
         for k, v in kwargs.items():
             
             if not hasattr(self, k):
-                raise Exception('Unknown attr ', k, '!')
+                raise Exception('Unknown attr '+ k +'!')
             else:
                 setattr(self, k, v)
                 
