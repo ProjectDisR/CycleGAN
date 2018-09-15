@@ -186,8 +186,6 @@ def test(**kwargs):
         gener_B = G_A2B(real_A)
         gener_A = G_B2A(real_B)
 
-        #gener_A = t.clamp(gener_A, -1, 1)
-        #gener_B = t.clamp(gener_B, -1, 1)
         gener_A = gener_A.cpu().detach().numpy()
         gener_B = gener_B.cpu().detach().numpy()
    
