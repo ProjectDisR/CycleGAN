@@ -1,10 +1,5 @@
 # CycleGAN
-
-## real horse
-![real_horse](real_horse.png)
-## real zebra
-![real_zebra](real_zebra.png)
-
+Reproducing CycleGAN
 
 ## Original Version
 ### loss_G
@@ -14,8 +9,12 @@
 ### loss_D_B
 ![train_D_B](train_D_B.png)
 
-## generated horse
+## real horse
+![real_horse](real_horse.png)
+## generated zebra
 ![train_gener_zebra](train_gener_zebra.png)
 
+## real zebra
+![real_zebra](real_zebra.png)
 ## generated horse
 ![train_gener_horse](train_gener_horse.png)
