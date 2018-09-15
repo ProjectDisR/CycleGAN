@@ -169,14 +169,13 @@ def test(**kwargs):
        
     G_A2B = Generator()
     G_B2A = Generator()
-    G_A2B.load_state_dict(os.path.join(opt.ckpts_root, 'G_A2B_e'+str(opt.n_epoch)+'.ckpt'))
-    G_B2A.load_state_dict(os.path.join(opt.ckpts_root, 'G_B2A_e'+str(opt.n_epoch)+'.ckpt'))
+    G_A2B.load_state_dict(t.load(os.path.join(opt.ckpts_root, 'G_A2B_e'+str(opt.n_epoch)+'.ckpt')))
+    G_B2A.load_state_dict(t.load(os.path.join(opt.ckpts_root, 'G_B2A_e'+str(opt.n_epoch)+'.ckpt')))
     G_A2B = G_A2B.cuda().eval()
     G_B2A = G_B2A.cuda().eval()
     
     if not os.path.isdir(os.path.join(opt.data_root, 'generA')):
-        os.mkdir(os.path.join(opt.data_root, 'generA'))
-        
+        os.mkdir(os.path.join(opt.data_root, 'generA'))        
     if not os.path.isdir(os.path.join(opt.data_root, 'generB')):
         os.mkdir(os.path.join(opt.data_root, 'generB'))
     
@@ -186,21 +185,17 @@ def test(**kwargs):
         real_B = real_B.cuda()
         gener_B = G_A2B(real_A)
         gener_A = G_B2A(real_B)
-        
-        gener_A = (gener_A*0.5 + 0.5)*255
-        gener_B = (gener_B*0.5 + 0.5)*255
-        gener_A = t.clamp(gener_A, 0, 255)
-        gener_B = t.clamp(gener_B, 0, 255)
-        gener_A = gener_A.cpu().numpy()
-        gener_B = gener_B.cpu().numpy()
 
-        
-        
+        #gener_A = t.clamp(gener_A, -1, 1)
+        #gener_B = t.clamp(gener_B, -1, 1)
+        gener_A = gener_A.cpu().detach().numpy()
+        gener_B = gener_B.cpu().detach().numpy()
+   
         for I_A, I_B, img_name_A, img_name_B in zip(gener_A, gener_B, img_names_A, img_names_B):
             I_A = np.transpose(I_A, (1, 2, 0))
             I_B = np.transpose(I_B, (1, 2, 0))
-            imsave(os.path.join(opt.data_root, 'generB', img_name_A), I_B)
-            imsave(os.path.join(opt.data_root, 'generA', img_name_B), I_A)
+            imsave(os.path.join(opt.data_root, 'generB', img_name_A), I_B, quality=100)
+            imsave(os.path.join(opt.data_root, 'generA', img_name_B), I_A, quality=100)
             
     return
 

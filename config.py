@@ -20,6 +20,8 @@ class DefaultConfig():
         
     def print_config(self):
         
+        print('\n')
+        
         import inspect
         
         for k in dir(self):   
