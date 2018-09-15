@@ -174,6 +174,12 @@ def test(**kwargs):
     G_A2B = G_A2B.cuda().eval()
     G_B2A = G_B2A.cuda().eval()
     
+    if not os.path.isdir(os.path.join(opt.data_root, 'generA')):
+        os.mkdir(os.path.join(opt.data_root, 'generA'))
+        
+    if not os.path.isdir(os.path.join(opt.data_root, 'generB')):
+        os.mkdir(os.path.join(opt.data_root, 'generB'))
+    
     for i, (real_A, real_B, img_names_A, img_names_B) in enumerate(test_dataloader):
         
         real_A = real_A.cuda()
@@ -188,11 +194,7 @@ def test(**kwargs):
         gener_A = gener_A.cpu().numpy()
         gener_B = gener_B.cpu().numpy()
 
-        if not os.path.isdir(os.path.join(opt.data_root, 'generA')):
-            os.mkdir(os.path.join(opt.data_root, 'generA'))
         
-        if not os.path.isdir(os.path.join(opt.data_root, 'generB')):
-            os.mkdir(os.path.join(opt.data_root, 'generB'))
         
         for I_A, I_B, img_name_A, img_name_B in zip(gener_A, gener_B, img_names_A, img_names_B):
             I_A = np.transpose(I_A, (1, 2, 0))
