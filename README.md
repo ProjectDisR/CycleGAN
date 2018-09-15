@@ -1,5 +1,5 @@
 # CycleGAN
-Reproducing CycleGAN
+Reproducing a famous transfer learning GAN - [CycleGAN](https://junyanz.github.io/CycleGAN/)
 
 ## Original Version
 ### loss_G
