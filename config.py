@@ -16,7 +16,7 @@ class DefaultConfig():
         self.n_epoch = 200
         self.batch_size = 2
         self.lr = 0.0002
-        self.lambda_cyle = 10
+        self.lambda_cycle = 10
         
     def print_config(self):
         

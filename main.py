@@ -84,8 +84,8 @@ def train(**kwargs):
             gener_A = G_B2A(real_B)
             recons_B = G_A2B(gener_A)
             
-            loss_G1 = criterion_real(D_B(gener_B), yes) + criterion_recons(recons_A, real_A)*opt.lambda_cyle
-            loss_G2 = criterion_real(D_A(gener_A), yes) + criterion_recons(recons_B, real_B)*opt.lambda_cyle
+            loss_G1 = criterion_real(D_B(gener_B), yes) + criterion_recons(recons_A, real_A)*opt.lambda_cycle
+            loss_G2 = criterion_real(D_A(gener_A), yes) + criterion_recons(recons_B, real_B)*opt.lambda_cycle
             loss_G = loss_G1 + loss_G2
             
             optimizer_G.zero_grad()
@@ -216,8 +216,8 @@ def train_x(**kwargs):
             gener_A = G_B2A(real_B)
             recons_B = G_A2B(gener_A)
             
-            loss_G1 = criterion_real(D(gener_B), label_B) + criterion_recons(recons_A, real_A)*opt.lambda_cyle
-            loss_G2 = criterion_real(D(gener_A), label_A) + criterion_recons(recons_B, real_B)*opt.lambda_cyle
+            loss_G1 = criterion_real(D(gener_B), label_B) + criterion_recons(recons_A, real_A)*opt.lambda_cycle
+            loss_G2 = criterion_real(D(gener_A), label_A) + criterion_recons(recons_B, real_B)*opt.lambda_cycle
             loss_G = loss_G1 + loss_G2
             
             optimizer_G.zero_grad()
