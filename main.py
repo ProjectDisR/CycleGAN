@@ -64,6 +64,7 @@ def train(**kwargs):
     vis.add_names('loss_G', 'loss_D_A', 'loss_D_B')
     
     for epoch in range(opt.n_epoch):
+        
         print('epoch{} '.format(epoch), time.strftime("%Y-%m-%d %H:%M:%S", time.localtime()))
         
         avgloss_G = 0
